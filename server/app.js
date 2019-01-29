@@ -5,6 +5,8 @@ const partials = require('express-partials');
 const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
+const user = require('./models/user')
+const db = require('./db/index')
 
 const app = express();
 
@@ -17,17 +19,17 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 
 
-app.get('/', 
+app.get('/',
 (req, res) => {
   res.render('index');
 });
 
-app.get('/create', 
+app.get('/create',
 (req, res) => {
   res.render('index');
 });
 
-app.get('/links', 
+app.get('/links',
 (req, res, next) => {
   models.Links.getAll()
     .then(links => {
@@ -38,7 +40,7 @@ app.get('/links',
     });
 });
 
-app.post('/links', 
+app.post('/links',
 (req, res, next) => {
   var url = req.body.url;
   if (!models.Links.isValidUrl(url)) {
@@ -73,6 +75,49 @@ app.post('/links',
       res.status(200).send(link);
     });
 });
+
+//create post for loggin in / creating new account.
+
+
+app.post('/signup', (req, res)=>{
+  var username = req.body.username;
+  var password = req.body.password;
+  //console.log(req.body.username)
+  // db.query(`SELECT username FROM USERS WHERE username = '${userName}';`,function(err, data) {
+  //   //console.log(data);
+  //     console.log('This is an error', err);
+  //   } else {
+  //     // console.log('This is data', data)
+  //user.create(req.body);
+  //     // json(test)
+  //   }
+  // })
+
+// var test = user.create(req.body)
+// console.log(json(test));
+// })
+ return models.User.get({username})
+  .then((data)=>{
+    if(data) {
+// todo
+    }
+      //return user.create({username: 'Samantha', password: 'Samantha'});
+  return models.User.create({username, password});
+  })
+  .then(()=>res.end())
+  .catch((err)=>{console.log('this is error', err)})
+
+ //console.log(json(test))
+ // console.log(test)
+
+})
+/*
+id , username, password, salt
+req username
+req password
+ - salt the password saving.
+ - hash?
+ */
 
 /************************************************************/
 // Write your authentication routes here
