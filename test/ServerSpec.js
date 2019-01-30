@@ -61,7 +61,7 @@ describe('', function() {
     afterEach(function() { server.close(); });
   });
 
-  xdescribe('Database Schema:', function() {
+  describe('Database Schema:', function() {
     it('contains a users table', function(done) {
       var queryString = 'SELECT * FROM users';
       db.query(queryString, function(err, results) {
@@ -140,7 +140,6 @@ describe('', function() {
         db.query(queryString, function(err, rows) {
           if (err) { done(err); }
           var user = rows[0];
-          console.log('user', user);
           expect(user).to.exist;
           expect(user.username).to.equal('Samantha');
           done();
